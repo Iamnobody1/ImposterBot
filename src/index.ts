@@ -3,22 +3,22 @@ import {
   GatewayIntentBits,
   Partials,
   Collection,
-  Client,
+  Client as discordClient,
   ClientOptions,
 } from "discord.js";
 import "dotenv/config";
 import path from "node:path";
 import fs from "node:fs";
 
-export class ClientX extends Client {
+export class Client extends discordClient {
   constructor(options: ClientOptions) {
     super(options);
   }
 
-  commands: Collection<unknown, any> | undefined;
+  commands!: Collection<unknown, any>;
 }
 
-const client = new ClientX({
+const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,

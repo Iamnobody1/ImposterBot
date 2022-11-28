@@ -1,29 +1,37 @@
-import { REST, Routes, SlashCommandBuilder } from "discord.js";
-const { clientId, guildId, token } = require("./config.json");
+import { REST, Routes } from "discord.js";
+import fs from "node:fs";
+import "dotenv/config";
 
-const commands = [
-  new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies with pong!"),
-  new SlashCommandBuilder()
-    .setName("server")
-    .setDescription("Replies with server info!"),
-  new SlashCommandBuilder()
-    .setName("user")
-    .setDescription("Replies with user info!"),
-  new SlashCommandBuilder()
-    .setName("random")
-    .setDescription("Replies with random math!"),
-  new SlashCommandBuilder()
-    .setName("random-name")
-    .setDescription("Replies with random name!"),
-].map((command) => command.toJSON());
+const commands = [];
+const commandFiles = fs
+  .readdirSync("./commands")
+  .filter((file) => file.endsWith(".js"));
 
-const rest = new REST({ version: "10" }).setToken(token);
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  commands.push(command.data.toJSON());
+}
 
-rest
-  .put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
-  .then((data: any) =>
-    console.log(`Successfully registered ${data.length} application commands.`)
-  )
-  .catch(console.error);
+const rest = new REST({ version: "10" }).setToken(process.env.TOKEN!);
+
+(async () => {
+  try {
+    console.log(
+      `Started refreshing ${commands.length} application (/) commands.`
+    );
+
+    const data: any = await rest.put(
+      Routes.applicationGuildCommands(
+        process.env.CLIENT_ID!,
+        process.env.GUILD_ID!
+      ),
+      { body: commands }
+    );
+
+    console.log(
+      `Successfully reloaded ${data.length} application (/) commands.`
+    );
+  } catch (error) {
+    console.error(error);
+  }
+})();
