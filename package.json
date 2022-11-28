@@ -11,7 +11,8 @@
     "build": "tsc",
     "start": "node ./bin/index.js",
     "start:dev": "yarn nodemon ./src/index.ts",
-    "dev": "ts-node ./src/index.ts"
+    "dev": "ts-node ./src/index.ts",
+    "lint": "eslint . --ext .ts"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,8 @@
     "@discordjs/builders": "^1.2.0",
     "@discordjs/rest": "^1.2.0",
     "@types/node": "^18.8.2",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
     "discord-api-types": "^0.37.11",
     "discord.js": "^14.5.0",
     "dotenv": "^16.0.3",
